@@ -2,6 +2,7 @@
 
 ### NetExec installation:
 kali -> `sudo apt install netexec`
+
 MacOS -> `brew install rust`
 `brew install pipx`
 `pipx install git+https://github.com/Pennyw0rth/NetExec`
