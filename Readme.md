@@ -14,6 +14,8 @@ https://www.netexec.wiki/getting-started/installation
 ### Bloodhound-python installation:
 `pip3 install bloodhound`
 
+https://github.com/dirkjanm/BloodHound.py
+
 <br>
 
 ### Linpeas/Winpeas official Releases:
