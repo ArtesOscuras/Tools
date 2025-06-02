@@ -7,16 +7,20 @@ MacOS -> `brew install rust` ;
 `brew install pipx` ; 
 `pipx install git+https://github.com/Pennyw0rth/NetExec`
 
+<br>
 
 ### Linpeas/Winpeas official Releases:
 https://github.com/peass-ng/PEASS-ng/releases/tag/20250601-88c7a0f6
 
+<br>
 
 ### Certipy installation:
 `pip3 install certipy-ad`
 IMPORTANT update:
 `pip3 install -U certipy-ad`
 https://github.com/ly4k/Certipy/wiki/04-%E2%80%90-Installation
+
+<br>
 
 ### PyWhysker installation:
 `pip3 install pywhisker`
