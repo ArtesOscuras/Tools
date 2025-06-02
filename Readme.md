@@ -7,12 +7,16 @@ MacOS -> `brew install rust` ;
 `brew install pipx` ; 
 `pipx install git+https://github.com/Pennyw0rth/NetExec`
 
+Command: nxc
+
 https://www.netexec.wiki/getting-started/installation
 
 <br>
 
 ### Bloodhound-python installation:
 `pip3 install bloodhound`
+
+Command: bloodhound-python
 
 https://github.com/dirkjanm/BloodHound.py
 
@@ -33,12 +37,16 @@ https://github.com/ropnop/kerbrute/releases/tag/v1.0.3
 IMPORTANT update:
 `pip3 install -U certipy-ad`
 
+Command: certipy or certipy-ad (depending on the installation)
+
 https://github.com/ly4k/Certipy/wiki/04-%E2%80%90-Installation
 
 <br>
 
 ### PyWhysker installation:
 `pip3 install pywhisker`
+
+Command: pywhisker
 
 https://github.com/ly4k/Certipy/wiki/04-%E2%80%90-Installation
 
@@ -47,11 +55,15 @@ https://github.com/ly4k/Certipy/wiki/04-%E2%80%90-Installation
 ### Ldap Shell installation:
 `git clone https://github.com/PShlyundin/ldap_shell.git` ; `cd ldap_shell` ; `python3 -m pip install .`
 
+Command: ldap_shell
+
 https://github.com/PShlyundin/ldap_shell
 
 <br>
 
 ### BlodyAD installation:
 `pip3 install bloodyAD`
+
+Command: bloodyAD
 
 https://github.com/CravateRouge/bloodyAD/wiki/Installation
