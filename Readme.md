@@ -29,6 +29,7 @@ https://github.com/peass-ng/PEASS-ng/releases/tag/20250601-88c7a0f6
 
 ### Kerbrute official Releases:
 Command -> kerbrute
+
 https://github.com/ropnop/kerbrute/releases/tag/v1.0.3
 
 <br>
