@@ -23,6 +23,11 @@ https://github.com/peass-ng/PEASS-ng/releases/tag/20250601-88c7a0f6
 
 <br>
 
+### Kerbrute official Releases:
+https://github.com/ropnop/kerbrute/releases/tag/v1.0.3
+
+<br>
+
 ### Certipy installation:
 `pip3 install certipy-ad`
 IMPORTANT update:
