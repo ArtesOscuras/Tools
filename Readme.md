@@ -41,3 +41,10 @@ https://github.com/ly4k/Certipy/wiki/04-%E2%80%90-Installation
 `pip3 install pywhisker`
 
 https://github.com/ly4k/Certipy/wiki/04-%E2%80%90-Installation
+
+<br>
+
+### Ldap Shell installation:
+`git clone https://github.com/PShlyundin/ldap_shell.git` ; `cd ldap_shell` ; `python3 -m pip install .`
+
+https://github.com/PShlyundin/ldap_shell
