@@ -48,3 +48,10 @@ https://github.com/ly4k/Certipy/wiki/04-%E2%80%90-Installation
 `git clone https://github.com/PShlyundin/ldap_shell.git` ; `cd ldap_shell` ; `python3 -m pip install .`
 
 https://github.com/PShlyundin/ldap_shell
+
+<br>
+
+### BlodyAD installation:
+`pip3 install bloodyAD`
+
+https://github.com/CravateRouge/bloodyAD/wiki/Installation
