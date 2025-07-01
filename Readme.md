@@ -14,11 +14,11 @@ https://www.netexec.wiki/getting-started/installation
 <br>
 
 ### Bloodhound-python installation:
-`pip3 install bloodhound`
+`pipx install bloodhound-ce` (use `pipx install bloodhound` for BloodHound legacy)
 
-Command -> bloodhound-python
+Command -> bloodhound-ce-python
 
-https://github.com/dirkjanm/BloodHound.py
+https://github.com/dirkjanm/BloodHound.py/tree/bloodhound-ce
 
 <br>
 
