@@ -15,7 +15,7 @@ import shutil
 
 
 if len(sys.argv) < 2:
-    print(f"Usage: {sys.argv[0]} <interface>")
+    print(f"Usage: sudo {sys.argv[0]} <interface>")
     sys.exit(1)
 
 INTERFACE = sys.argv[1]
