@@ -170,7 +170,7 @@ def add_host(ip, mac, method, vendor_override=None):
 def passive_sniffer(interface):
     print("[*] Passive mDNS listener started...")
 
-    cmd = ["tcpdump", "-l", "-n", "-i", interface, "udp port 5353"]
+    cmd = ["tcpdump", "-l", "-n", "-i", interface, "udp port 5353"] # TCPDUMP requires root to work properly
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                             stderr=subprocess.DEVNULL, text=True)
 
