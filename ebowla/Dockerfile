@@ -1,0 +1,72 @@
+FROM debian:stretch
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Apuntar a repositorios archivados
+RUN sed -i 's|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list && \
+    sed -i 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list && \
+    sed -i '/stretch-updates/d' /etc/apt/sources.list
+
+RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
+
+# Dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    wget \
+    git \
+    build-essential \
+    python2.7 \
+    python-pip \
+    mingw-w64 \
+    nano \
+    && rm -rf /var/lib/apt/lists/*
+
+# ---- Go 1.9.5 (legacy) ----
+ENV GO_VERSION=1.9.5
+RUN wget https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && \
+    rm go${GO_VERSION}.linux-amd64.tar.gz
+
+ENV GOROOT=/usr/local/go
+ENV GOPATH=/go
+ENV PATH=$GOROOT/bin:$GOPATH/bin:$PATH
+
+# Workspace
+WORKDIR /opt
+RUN git clone https://github.com/Genetic-Malware/Ebowla.git
+
+WORKDIR /opt/Ebowla
+
+# --------------------------------------
+# Sobrescribir genetic.config desde Base64
+# --------------------------------------
+WORKDIR /opt/Ebowla
+
+RUN echo 'W092ZXJhbGxdCgogICAgIyBPcHRpb25zIEVOViwgT1RQCgogICAgRW5jcnlwdGlvbl9UeXBlID0gRU5WIAoKCiAgICAjIFRlbXBsYXRlIG91dHB1dDogR08sIFB5dGhvbiwgT1IgUG93ZXJTaGVsbCAKCiAgICBvdXRwdXRfdHlwZSA9IEdPCgoKICAgICMgTnVtYmVyIG9mIGJ5dGVzIHN1YnRyYWN0ZWQgZnJvbSB0aGUgcmVjb25zdHJ1Y3RlZCBwYXlsb2FkIHRoYXQgd2lsbCBiZSB0aGUKICAgICMgc2hhNTEyIGNoZWNrc3VtIHVzZWQgd2hlbiBjaGVja2luZyB0aGUgZmlsZSBiZWZvcmUgZXhlY3V0aW5nIHRoZSBwYXlsb2FkLgoKICAgIG1pbnVzX2J5dGVzID0gMQoKCiAgICAjIHR5cGUgb2YgZmlsZSBiZWluZyBmZWQgKHBheWxvYWQpIC0gYWxzbyBkZXRlcm1pbmVzIGV4ZWN1dGlvbgogICAgIyBQeXRob246IEVYRSwgRExMX3g4NiwgRExMX3g2NCBhcmUgd3JpdHRlbiB0byBkaXNrCiAgICAjIEdPOiBOb3RoaW5nIGlzIHdyaXR0ZW4gdG8gZGlzawogICAgIyBPUFRJT05TIGZvciBHTzogRVhFLCBETExfeDg2LCBETExfeDY0LCBTSEVMTENPREUKICAgICMgT1BUSU9OUyBmb3IgUFlUSE9OOiBFWEUsIFNIRUxMQ09ERSwgQ09ERSwgRklMRV9EUk9QCiAgICAjIE9QVElPTlMgZm9yIFBvd2VyU2hlbGw6IENPREUsIERMTF94ODYsIERMTF94NjQsIEVYRSwgRklMRV9EUk9QCgogICAgcGF5bG9hZF90eXBlID0gRVhFCgoKICAgICMga2V5X2l0ZXJhdGlvbnMgaXMgZm9yIG90cF90eXBlID0ga2V5IGFuZCBmb3Igc3ltbWV0cmljX3NldHRpbmdzX3dpbgogICAgIyBJdCBpcyB0aGUgbnVtYmVyIG9mIHRpbWVzIHRoYXQgdGhlIGtleSBoYXNoIGlzIGl0ZXJhdGVkIHZpYSBzaGE1MTIgYmVmb3JlIGJlaW5nIHVzZWQKICAgICMgYXMgdGhlIGVuY3J5cHRpb24ga2V5LiAgTk9UIGF2YWlsYWJsZSB0byBvdHBfdHlwZSA9IGZ1bGwKCiAgICBrZXlfaXRlcmF0aW9ucyA9IDEwMDAwIAoKICAgICMgQ2xlYW4gdGhlIHJlc3VsdGluZyBsb2FkZXJzIGZyb20gY29tbWVudHMgYW5kIHByaW50IHN0YXRlbWVudHMKICAgICMgVGhpcyB3aWxsIG1ha2UgdGhlIHJ1bnMgZmFzdGVyIGFuZCBub3QgZGlzcGxheSBzdGF0dXMgaW5mb3JtYXRpb24gb24gdGhlIHZpY3RpbSBob3N0CiAgICAjIE1vc3QgdXNlZnVsIG9uY2UgcGF5bG9hZHMgaGF2ZSBiZWVuIHRlc3RlZCBhbmQgYXJlIHJlYWR5IGZvciBkZXBsb3ltZW50CiAgICAjIFZhbHVlcyBCb29sOiBUcnVlIG9yIEZhbHNlCgogICAgY2xlYW5fb3V0cHV0ID0gRmFsc2UgCgoKW290cF9zZXR0aW5nc10KICAgICMgb3RwIGlzIHNpbXBsZSwgcHJvdmlkZSBvbmUgdGltZSBwYWQsIHR5cGUsICBhbmQgc3RhcnRpbmcgc2VhcmNoIGxvY2F0aW9uCiAgICAjIHR5cGUgaXMgZnVsbCBvdHAgdG8gcmVjb25zdHJ1Y3QgdGhlIG1hbHdhcmUgaW4gbWVtb3J5LCBvciBhbiBvZmZzZXQgaW4gdGhlIGZpbGUgZm9yIGEgc3ltbWV0cmljIGtleQoKICAgIG90cF90eXBlID0ga2V5ICMgT1BUSU9OUzogZnVsbCwga2V5CgoKICAgICMgRmlsZSBmb3IgdXNlIHdpdGggb3RwCgogICAgcGFkID0gJ2NtZC5leGUnCgogICAgIyBNYXggcGFkIHNpemU6IERlY2lkZSB0aGUgbGFyZ2VzdCBwYWQgc2l6ZSB0byB1c2UuIAogICAgIyAyNTYgKiogMyAtIDEgKDE2Nzc3MjE1IG9yIDB4ZmZmZmZmKSBtYXhpbXVtIGlzIHN1cHBvcnRlZAogICAgIyBUb28gc21hbGwgbWlnaHQgYmUgYSBiYWQgaWRlYS4uLiAKCiAgICBwYWRfbWF4ID0gMHhmZmZmZmYKCiAgICAjIHN0YXJ0aW5nIGxvY2F0aW9uIGluIHRoZSBwYXRoIHRvIHN0YXJ0IGxvb2tpbmcgaWYgd2Fsa2luZyB0aGUgcGF0aAoKICAgIHNjYW5fZGlyID0gJ2M6XHdpbmRvd3Ncc3lzbmF0aXZlJyMnJUFQUERBVEElJwoKCiAgICAjIEZvciB1c2Ugd2l0aCBGVUxMIE9UUDoKICAgICMgIE51bWJlciBvZiBtYXggYnl0ZXMgZm9yIG1hdGNoaW5nIHRoZSBwYXlsb2FkIGFnYWluc3QgdGhlIE9UUCAKICAgICMgIC0tIGxhcmdlciBieXRlIHdpZHRoIGVxdWFscyBwb3NzaWJsZSBzbWFsbGVyIGxvb2t1cCB0YWJsZSBidXQgbG9uZ2VyIGJ1aWxkIHRpbWVzCgogICAgYnl0ZV93aWR0aCA9IDkKCgoKW3N5bW1ldHJpY19zZXR0aW5nc193aW5dCiAgICAjIEFFUy1DRkItMjU2IGtleSBmcm9tIGEgY29tYmluYXRpb24gb2YgdGhlIGFueSBvZiB0aGUgZm9sbG93aW5nIHNldHRpbmdzLgogICAgIyBBbnkgb2YgdGhlIGZvbGxvd2luZyBjYW4gYmUgdXNlZCwgdGhlIG1vcmUgc3BlY2lmaWMgdG8geW91ciB0YXJnZXQgdGhlIGJldHRlci4gIAoKCiAgICAjIHNldCB0aGUgdmFsdWUgdG8gJycgaWYgeW91IGRvIG5vdCB3YW50IHRvIHVzZSB0aGF0IHZhbHVlCgoKICAgICMgVGhpcyBpcyBub3QgYSBwZXJtYW5lbnQgbGlzdC4gIEFueSBlbnYgdmFyaWFibGUgY2FuIGJlIGFkZGVkIGJlbG93LgogICAgIyBJZiB5b3Ugd2FudCB0aGUgZW52IHZhcmlhYmxlIHRvIGJlIHVzZWQsIGdpdmUgaXQgYSB2YWx1ZS4KICAgICMgVGhlc2UgYXJlIGNhc2UgaW5zZW5zaXRpdmUuCiAgICAKICAgIFtbRU5WX1ZBUl1dCiAgICAKICAgICAgICB1c2VybmFtZSA9ICcnCiAgICAgICAgY29tcHV0ZXJuYW1lID0gJycKICAgICAgICBob21lcGF0aCA9ICcnCiAgICAgICAgaG9tZWRyaXZlID0gJycKICAgICAgICBOdW1iZXJfb2ZfcHJvY2Vzc29ycyA9ICcnCiAgICAgICAgcHJvY2Vzc29yX2lkZW50aWZpZXIgPSAnJwogICAgICAgIHByb2Nlc3Nvcl9yZXZpc2lvbiA9ICcnCiAgICAgICAgdXNlcmRvbWFpbiA9ICcnCiAgICAgICAgc3lzdGVtZHJpdmUgPSAnQzonCiAgICAgICAgdXNlcnByb2ZpbGUgPSAnJwogICAgICAgIHBhdGggPSAnJwogICAgICAgIHRlbXAgPSAnJwoKCiAgICAgW1tQQVRIXV0KICAgIAogICAgIyBDaGVjayBpZiBhIHBhdGggZXhpc3RzIG9uIHRoZSB3b3Jrc3RhdGlvbgogICAgIyBPbmx5IG9uZSBwYXRoIGNhbiBiZSB1c2VkLiAgVGhpcyBpcyBpbW11dGFibGUuIFRvIHVzZSwgZ2l2ZSBpdCBhIHZhbHVlIGFuZCBhIHN0YXJ0IGxvY2F0aW9uLgogICAgCiAgICAgICAgIyBUaGlzIGlzIHRoZSBwYXRoIHRoYXQgd2lsbCBiZSB1c2VkIGFzIHBhcnQgb2YgdGhlIGtleQoKICAgICAgICBwYXRoID0gJycKICAgIAogICAgICAgICMgWW91IGNhbiBwcm92aWRlIEVudiBWYXJpYWJsZXMgdGhhdCBhcmUgYXNzb2NpYXRlZCB3aXRoIGEgcGF0aCBmb3IgdGhlIHN0YXJ0X2xvYwogICAgICAgICMgICwgc3VjaCBhcyAlVEVNUCUsICVBUFBEQVRBJSwgJVBST0dSQU1GSUxFUyUKICAgICMgWW91IE11c3QgdXNlIHRoZSAlRU5WIFZBUiUgd2hlbiB1c2luZyBlbnYgdmFycyBmb3IgcGF0aHMhCiAgICAjIEV4YW1wbGVzOiBDOlxXaW5kb3dzLCBDOlxQcm9ncmFtIEZpbGVzLCAlQVBQREFUQSUKICAgIAogICAgc3RhcnRfbG9jID0gJyVIT01FUEFUSCUnCgoKICAgIFtbSVBfUkFOR0VTXV0KICAgIAogICAgIyBOZXR3b3JrIG1hc2sgZm9yIGV4dGVybmFsIGVudW1lcmF0aW9uIDIyLjIzLjAuMAogICAgIyBJUCBtYXNrIHNob3VsZCBub3QgYmUgdXNlZCBhbG9uZSBtb3JlIHNpbXBsZSB0byBicnV0ZSBmb3JjZS4KICAgICMgU3VwcG9ydCBmb3Igb25seSAyNCAxNiA4IG1hc2tzIG9yIGV4YWN0IGlwCiAgICAjIDEyLjEyLjAuMCBvciAxMi4xMi4xMi4xMiBvciAxMi4xMi4wLjAgb3IgMTIuMC4wLjAKICAgIAogICAgZXh0ZXJuYWxfaXBfbWFzayA9ICcnICAKCgogICAgW1tTWVNURU1fVElNRV1dCiAgICAKICAgICMgVGltZSBSYW5nZSB3aXRoIEJFR0lORyBhbmQgRU5EIGluIEVQT0MKICAgICAgICAjIFNob3VsZCBiZSB1c2VkIHdpdGggYW5vdGhlciB2YXJpYWJsZQogICAgIyBUaGlzIGlzIGEgbWFzazogMjAxNjEwMDEgb3IgMjAxNjEwMDAgb3IgMjAxNjAwMDAKICAgICMgWUVBUiwgTU9OVEgsIERBWQogICAgCiAgICBUaW1lX1JhbmdlID0gJycgCgoK' | base64 -d > /opt/Ebowla/genetic.config
+
+# Dependencias Python legacy
+RUN pip install --no-cache-dir \
+    configobj \
+    pyparsing==2.4.7 || true
+
+RUN pip install --no-cache-dir -r requirements.txt || true
+
+# --------------------------------------
+# Compilar MemoryModule con MinGW automáticamente
+# --------------------------------------
+WORKDIR /opt/Ebowla/MemoryModule
+RUN x86_64-w64-mingw32-gcc -c MemoryModule.c -o MemoryModule.o && \
+    mkdir -p build && \
+    x86_64-w64-mingw32-ar rcs build/MemoryModule.a MemoryModule.o
+
+# Variables de entorno para cross-compilación Go
+ENV GOOS=windows
+ENV GOARCH=amd64
+ENV CGO_ENABLED=1
+ENV CC=x86_64-w64-mingw32-gcc
+ENV CXX=x86_64-w64-mingw32-g++
+
+WORKDIR /opt/Ebowla
+
+# CMD opcional: abrir bash para compilar .go dentro del contenedor
+CMD ["/bin/bash"]
