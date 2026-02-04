@@ -22,7 +22,7 @@ def hex_to_sid(hexstr):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Uso: python hex2sid.py 0xHEXSID")
+        print("Uso: python3 hex2sid.py 0xHEXSID")
         sys.exit(1)
     hexsid = sys.argv[1].strip()
     sid = hex_to_sid(hexsid)
